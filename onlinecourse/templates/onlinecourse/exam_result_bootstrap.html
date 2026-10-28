@@ -1,0 +1,35 @@
+{% extends "base_bootstrap.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Exam result: {{ course.name }}</h2>
+
+  {% if passed %}
+    <div class="alert alert-success"><h4>Congratulations!</h4> You passed the exam.</div>
+  {% else %}
+    <div class="alert alert-warning"><h4>Keep practising.</h4> You did not reach the pass mark.</div>
+  {% endif %}
+
+  <p><strong>Score:</strong> {{ earned }} / {{ total }} ({{ percent }}%)</p>
+
+  {% for row in rows %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5>{{ row.question.text }}
+          {% if row.correct %}<span class="badge badge-success">Correct</span>
+          {% else %}<span class="badge badge-danger">Incorrect</span>{% endif %}
+        </h5>
+        <ul>
+          {% for choice in row.question.choice_set.all %}
+            <li>{{ choice.text }}
+              {% if choice.is_correct %}(correct){% endif %}
+              {% if choice in row.chosen %}<em>[your answer]</em>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+
+  <a href="{% url 'onlinecourse:course_details' course.id %}" class="btn btn-secondary">Back to course</a>
+</div>
+{% endblock %}
